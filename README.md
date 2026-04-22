@@ -1,6 +1,6 @@
 # gh-audit-test-fixtures
 
-Test fixture repo for [gh-audit](https://github.com/stefanpenner/gh-audit). Each scenario is tagged for automated validation. `scenarios.json` is the index of scenario IDs → branch names, SHAs, and expected verdicts.
+Test fixture repo for [gh-audit](https://github.com/stefanpenner/gh-audit). `scenarios.json` is the machine-readable index of scenario IDs → branch names, commit SHAs, and expected audit outcomes. It's consumed by `scripts/test-fixtures.sh` in the gh-audit repo to validate each release.
 
 ## Series
 
@@ -11,66 +11,34 @@ Test fixture repo for [gh-audit](https://github.com/stefanpenner/gh-audit). Each
 
 ## Revert scenarios (4.x)
 
-Map 1:1 to the revert-classification table in gh-audit's `Architecture.md`.
+Map 1:1 to the revert-classification table in gh-audit's `Architecture.md` rule 8.
 
-| # | Title | Waived? | Rule |
+| # | Title | Compliant? | Why |
 |---|---|---|---|
 | 4.1 | AutoRevert (bot-style message) | yes | R1 (trusted by construction) |
-| 4.2 | Clean `git revert` | yes | R1 (diff-verified) |
-| 4.3 | `git revert` with conflict resolution | no | falls through |
-| 4.4 | Manual revert with stripped trailer | no | falls through |
-| 4.5 | GH "Revert" button, clean, squash/rebase-merged ⚠️ | yes | R1 (diff-verified) |
-| 4.6 | GH "Revert" button with conflict resolution ⚠️ | no | falls through |
-| 4.7 | GH "Revert" button, merge-commit strategy ⚠️ | no | merge commit isn't a revert |
-| 4.8 | Revert-of-revert via GH UI ⚠️ | no | RevertOfRevert never clean |
-| 4.9 | Revert-of-revert via local `git revert` (legacy message) | no | RevertOfRevert never clean |
-| 4.10 | Direct-push revert (no PR) | yes | R1 applies without a PR |
-| 4.11 | Octopus merge | no | not revert-related; OctopusMerge kind |
-| 4.12 | Empty revert of empty base | yes | R1 (trivially) + empty-commit fallback |
+| 4.2 | Clean `git revert` | yes | R1 (diff-verified via `This reverts commit` trailer) |
+| 4.3 | `git revert` with conflict resolution | no | `diff-mismatch` |
+| 4.4 | Manual revert with stripped trailer | no | `message-only` — no reverted SHA recoverable |
+| 4.5 | GH "Revert" button, squash-merged | yes | R1 — trailer missing, SHA recovered via `revert-<N>-…` head-branch fallback |
+| 4.6 | GH "Revert" button with conflicts | — | not reproducible; GH refuses the button when the target can't be auto-reverted |
+| 4.7 | GH "Revert" button, merge-commit strategy | yes | R1 on the underlying revert commit in the second-parent chain |
+| 4.8 | Revert-of-revert via GH UI ⚠️ | no | `RevertOfRevert` is never classified clean |
+| 4.9 | Revert-of-revert via local `git revert` (legacy message) | no | same — `RevertOfRevert` never clean |
+| 4.10 | Direct-push clean revert (no PR) | **no** | rule 3 (no associated PR) wins over rule 8; bypassing PR review is a violation even with a clean diff |
+| 4.11 | Octopus merge | no | not revert-related; `OctopusMerge` kind |
+| 4.12 | Empty revert of empty base | yes | empty-commit fallback fires first (R1 would also cover it) |
 
-⚠️ = requires manual completion via the GH UI; scripting the "Revert" button isn't possible.
+⚠️ = requires manual completion via the GH UI. The only remaining UI-only scenario is 4.8 — 4.5 and 4.7 are already produced and indexed.
 
-## Completing the UI-only scenarios
+## Completing scenario 4.8
 
-These four scenarios can only be produced by clicking buttons on github.com — the committer has to be `web-flow` and the signature has to be GitHub-generated, which no local flow can reproduce. Follow them in order; each step assumes the previous one is complete.
+1. Scenario 4.5 must already be complete (its revert [PR #33](https://github.com/stefanpenner/gh-audit-test-fixtures/pull/33) exists and is merged).
+2. Open [PR #33](https://github.com/stefanpenner/gh-audit-test-fixtures/pull/33) on github.com.
+3. Click the **Revert** button on that revert PR. GitHub will open a new "Revert Revert …" PR.
+4. Merge with **Squash and merge**.
+5. The resulting commit's message should start with `Revert "Revert \"Scenario 4.5: …\""`. gh-audit classifies it as `RevertOfRevert` and falls through to rule 7.
+6. Add an entry to `scenarios.json` under 4.8's `assertions` with the new commit SHA, `is_compliant: false`, `is_clean_revert: false`, `revert_verification: "none"`.
 
-### 4.5 — Clean revert via GH "Revert" button (squash-merged)
+## Scenarios intentionally not reproducible
 
-1. Create a base PR:
-   - Branch: `scenario/4.5-gh-revert-clean-base` off `main`
-   - Add file `scenario-4.5.txt` with contents `4.5 base`
-   - Open PR "Scenario 4.5: base (for GH revert button)" and merge it (any strategy).
-2. Browse to the merged PR on github.com.
-3. Click the **Revert** button at the bottom. GitHub creates `revert-<N>-scenario/4.5-gh-revert-clean-base` and opens PR "Revert Scenario 4.5: base (for GH revert button)".
-4. Merge that new PR with **Squash and merge**.
-5. On the squashed revert commit, verify on github.com that:
-   - Committer is `web-flow`
-   - Signature shows "Verified"
-   - Message starts with `Revert "Scenario 4.5: …"` and contains the `This reverts commit …` trailer.
-6. Update `scenarios.json` with the resulting branch name and revert-commit SHA.
-
-### 4.6 — GH "Revert" button with conflict resolution
-
-1. Create and merge a base PR `scenario/4.6-gh-revert-conflict-base` that adds `scenario-4.6.txt` with three lines `aaa\nbbb\nccc\n`.
-2. Create and merge a second PR `scenario/4.6-gh-revert-conflict-modify` that changes line 2 from `bbb` to `BBB`. This is what will cause the revert to conflict.
-3. Browse to the base PR on github.com and click **Revert**.
-4. GitHub will offer to open a PR; the revert branch will have conflicts. Resolve them in the GH web editor (e.g., keep `BBB`, delete `aaa` and `ccc`).
-5. Merge the conflict-resolved revert PR (any strategy).
-6. Update `scenarios.json`.
-
-### 4.7 — GH "Revert" button, merge-commit strategy
-
-1. Create and merge a base PR `scenario/4.7-gh-revert-merge-base` that adds `scenario-4.7.txt`.
-2. Click the **Revert** button on the merged PR.
-3. When merging the resulting revert PR, pick **Create a merge commit** from the split-button merge menu.
-4. On main you should now see a 2-parent `Merge pull request #…` commit whose second-parent chain contains the revert. gh-audit should classify the merge commit itself as `CleanMerge` (not a revert).
-5. Update `scenarios.json`.
-
-### 4.8 — Revert-of-revert via the GH UI
-
-1. Complete scenario 4.5 first (or reuse its branches).
-2. Browse to the **revert** PR created by 4.5 on github.com.
-3. Click the **Revert** button on *that* PR.
-4. Merge the resulting re-apply PR with Squash and merge.
-5. The squashed commit should have a message like `Revert "Revert \"Scenario 4.5: …\""`, committer=`web-flow`, verified. gh-audit classifies it as `RevertOfRevert` — never clean, falls through.
-6. Update `scenarios.json`.
+- **4.6** — GitHub's "Revert" button refuses when the target PR can no longer be auto-reverted (error: *"Sorry, this pull request couldn't be reverted automatically…"*). A developer hitting that falls back to local `git revert` with manual conflict resolution, which scenario 4.3 already covers.
