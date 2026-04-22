@@ -1,4 +1,128 @@
 {
-  "description": "Maps scenario IDs to their branch names and expected outcomes",
-  "scenarios": {}
+  "description": "Maps scenario IDs to their branch names and expected outcomes. Revert scenarios (4.x) map to the table in gh-audit's Architecture.md and TODO.md.",
+  "scenarios": {
+    "4.1": {
+      "title": "AutoRevert (bot-style message)",
+      "branch": "scenario/4.1-auto-revert",
+      "base_branch": "scenario/4.1-auto-revert-base",
+      "revert_commit": "7226e31fdf0637df81e0fe1cbdf802cb1549a4e0",
+      "base_commit": "808dd18a5315eb3f21c27b6d35d20c397f659af0",
+      "expected_kind": "AutoRevert",
+      "expected_clean_revert": true,
+      "expected_verdict": "compliant (R1)",
+      "notes": "Message matches `Automatic revert of <sha>..<sha>` regex; trusted by construction without diff verification."
+    },
+    "4.2": {
+      "title": "Clean git-revert",
+      "branch": "scenario/4.2-clean-revert",
+      "base_branch": "scenario/4.2-clean-revert-base",
+      "revert_commit": "edeffcd99d4a060f7eaac9b4ee5de940ff474785",
+      "base_commit": "1aa0c5b839717259a28652b4f485955af70ee370",
+      "expected_kind": "ManualRevert",
+      "expected_revert_verification": "diff-verified",
+      "expected_clean_revert": true,
+      "expected_verdict": "compliant (R1)"
+    },
+    "4.3": {
+      "title": "Conflict-resolved git-revert",
+      "branch": "scenario/4.3-conflict-revert",
+      "base_branch": "scenario/4.3-conflict-revert-base",
+      "modify_branch": "scenario/4.3-conflict-revert-modify",
+      "revert_commit": "d302a8acd3fd285178c504497346cba239ea93db",
+      "base_commit": "ed3a48f2758e7381dcdd8487b045157181414b61",
+      "expected_kind": "ManualRevert",
+      "expected_revert_verification": "diff-mismatch",
+      "expected_clean_revert": false,
+      "expected_verdict": "non-compliant (falls through to PR-approval; no approval on this PR)"
+    },
+    "4.4": {
+      "title": "Manual revert with stripped trailer",
+      "branch": "scenario/4.4-missing-trailer",
+      "base_branch": "scenario/4.4-missing-trailer-base",
+      "revert_commit": "f51f5077294ea3b8ef0212da11de9c25b230505d",
+      "base_commit": "8e265b679ddf23e4fcfc02c08a7a4543aa86869c",
+      "expected_kind": "ManualRevert",
+      "expected_revert_verification": "message-only",
+      "expected_clean_revert": false,
+      "expected_verdict": "non-compliant (no trailer means no reverted_sha; diff-verify skipped)"
+    },
+    "4.5": {
+      "title": "GH 'Revert' button — clean, squash-merged (UI-only)",
+      "branch": null,
+      "expected_kind": "ManualRevert",
+      "expected_revert_verification": "diff-verified",
+      "expected_clean_revert": true,
+      "expected_verdict": "compliant (R1)",
+      "notes": "Cannot be scripted — requires clicking the Revert button on github.com. See README."
+    },
+    "4.6": {
+      "title": "GH 'Revert' button with conflict resolution (UI-only)",
+      "branch": null,
+      "expected_kind": "ManualRevert",
+      "expected_revert_verification": "diff-mismatch",
+      "expected_clean_revert": false,
+      "expected_verdict": "non-compliant (provenance alone no longer waives; R2 was dropped)",
+      "notes": "Cannot be scripted — requires GH UI conflict resolution flow. See README."
+    },
+    "4.7": {
+      "title": "GH 'Revert' button, merge-commit strategy (UI-only)",
+      "branch": null,
+      "expected_kind_on_merge_commit": "NotRevert (merge-commit message is `Merge pull request #…`)",
+      "expected_clean_revert": false,
+      "expected_verdict": "non-compliant (revert lives in second-parent chain; audited merge commit isn't a revert)",
+      "notes": "Cannot be scripted — UI selection of merge-commit strategy. See README."
+    },
+    "4.8": {
+      "title": "Revert-of-revert via the GH UI (UI-only)",
+      "branch": null,
+      "expected_kind": "RevertOfRevert",
+      "expected_clean_revert": false,
+      "expected_verdict": "non-compliant (RevertOfRevert is never classified clean; re-application needs review)",
+      "notes": "Cannot be scripted — requires clicking Revert on a revert PR. See README."
+    },
+    "4.9": {
+      "title": "Revert-of-revert via local git (legacy message format)",
+      "branch": "scenario/4.9-revert-of-revert",
+      "intermediate_branch": "scenario/4.9-revert-of-revert-revert",
+      "base_branch": "scenario/4.9-revert-of-revert-base",
+      "revert_of_revert_commit": "4490b9d2617dfffee8c243c79c2ce4e3b5076aea",
+      "first_revert_commit": "5bc11db876e60333dd1ed3e335823a9fcaea88b6",
+      "base_commit": "7d431290fc88a8f739dabe2aa7e330b52c2ccbed",
+      "expected_kind": "RevertOfRevert",
+      "expected_clean_revert": false,
+      "expected_verdict": "non-compliant"
+    },
+    "4.10": {
+      "title": "Direct-push revert (no PR)",
+      "base_branch": "scenario/4.10-direct-push-base",
+      "revert_commit": "c7d8bfcb5f2c458672fe0bbb5fb711adaf9bcce5",
+      "base_commit": "0ec918bf731c1dc5ed971ae558e466bebb1115fe",
+      "expected_kind": "ManualRevert",
+      "expected_revert_verification": "diff-verified",
+      "expected_clean_revert": true,
+      "expected_verdict": "compliant (R1) — clean-revert waiver applies even without a PR",
+      "notes": "Revert was pushed directly to main; base came through a PR so the reverted_sha resolves."
+    },
+    "4.11": {
+      "title": "Octopus merge (3-way merge)",
+      "branch_a": "scenario/4.11-octopus-a",
+      "branch_b": "scenario/4.11-octopus-b",
+      "branch_c": "scenario/4.11-octopus-c",
+      "octopus_commit": "32981a62e911a3f4e8c1b7d6791b20efb1b9c4c9",
+      "expected_merge_kind": "OctopusMerge",
+      "expected_verdict": "non-compliant (octopus merges are not auto-classified as clean)",
+      "notes": "Not a revert scenario per se — included to exercise the octopus path."
+    },
+    "4.12": {
+      "title": "Empty revert of empty base",
+      "branch": "scenario/4.12-empty-revert",
+      "base_branch": "scenario/4.12-empty-revert-base",
+      "revert_commit": "5331e8de550228e550d8b00e7862b9555a7cb770",
+      "base_commit": "00e88ef01b7baf78afa5444ea34cdd84f7824a90",
+      "expected_kind": "ManualRevert",
+      "expected_revert_verification": "diff-verified",
+      "expected_clean_revert": true,
+      "expected_verdict": "compliant (R1 fires trivially; empty-commit fallback would also apply)"
+    }
+  }
 }
