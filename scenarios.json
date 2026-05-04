@@ -95,10 +95,10 @@
     "4.8": {
       "title": "Revert-of-revert via the GH UI (UI-only)",
       "branch": "revert-33-revert-29-scenario/4.5-gh-revert-clean-base",
-      "notes": "Cannot be scripted \u2014 requires clicking Revert on a revert PR on github.com. See README.",
+      "notes": "Produced by clicking Revert on PR #33 (the 4.5 revert) and merge-committing. The revert-of-revert content lives in the second-parent chain of the merge commit.",
       "assertions": [
         {
-          "sha": "9ea915bc985d00b31469c5dae573b567540affe4",
+          "sha": "c6fe39ad83983177b4ba56bdbec5c8f5a705183d",
           "comment": "revert-of-revert via GH UI \u2014 never classified clean",
           "is_compliant": false,
           "is_clean_revert": false,
