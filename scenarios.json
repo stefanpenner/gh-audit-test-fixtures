@@ -217,7 +217,7 @@
           "has_final_approval": false,
           "is_self_approved": false,
           "pr_count": 1,
-          "merge_strategy": "squash",
+          "merge_strategy": "rebase",
           "is_clean_merge": false
         }
       ]
