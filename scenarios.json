@@ -56,10 +56,10 @@
       ]
     },
     "4.5": {
-      "title": "GH 'Revert' button — clean, squash-merged",
+      "title": "GH 'Revert' button \u2014 clean, squash-merged",
       "branch": "revert-29-scenario/4.5-gh-revert-clean-base",
       "base_branch": "scenario/4.5-gh-revert-clean-base",
-      "notes": "GH squash commit has no `This reverts commit <sha>` trailer; reverted SHA is recovered from the revert PR's head branch `revert-29-…` → PR #29's merge_commit_sha → diff-verify.",
+      "notes": "GH squash commit has no `This reverts commit <sha>` trailer; reverted SHA is recovered from the revert PR's head branch `revert-29-\u2026` \u2192 PR #29's merge_commit_sha \u2192 diff-verify.",
       "assertions": [
         {
           "sha": "0063656668b0ebc763c21b0aae36cd7f2eeccb02",
@@ -74,14 +74,14 @@
       "branch": null,
       "base_branch": "scenario/4.6-gh-revert-conflict-base",
       "modify_branch": "scenario/4.6-gh-revert-conflict-modify",
-      "notes": "Not reproducible — GitHub refuses the Revert button when the base can't be auto-reverted. Users in this situation fall back to local `git revert`, covered by 4.3.",
+      "notes": "Not reproducible \u2014 GitHub refuses the Revert button when the base can't be auto-reverted. Users in this situation fall back to local `git revert`, covered by 4.3.",
       "assertions": []
     },
     "4.7": {
       "title": "GH 'Revert' button, merge-commit strategy",
       "branch": "revert-32-scenario/4.7-gh-revert-mergecommit-base",
       "base_branch": "scenario/4.7-gh-revert-mergecommit-base",
-      "notes": "The revert commit lives on the second-parent chain of the 2-parent `Merge pull request #…` commit. gh-audit audits both. The merge commit is NotRevert (CleanMerge-shaped). The revert commit itself gets the branch-name fallback treatment and diff-verifies.",
+      "notes": "The revert commit lives on the second-parent chain of the 2-parent `Merge pull request #\u2026` commit. gh-audit audits both. The merge commit is NotRevert (CleanMerge-shaped). The revert commit itself gets the branch-name fallback treatment and diff-verifies.",
       "assertions": [
         {
           "sha": "6e218c52b35629884f08dec74f245c218cb53666",
@@ -94,27 +94,35 @@
     },
     "4.8": {
       "title": "Revert-of-revert via the GH UI (UI-only)",
-      "branch": null,
-      "notes": "Cannot be scripted — requires clicking Revert on a revert PR on github.com. See README.",
-      "assertions": []
+      "branch": "revert-33-revert-29-scenario/4.5-gh-revert-clean-base",
+      "notes": "Cannot be scripted \u2014 requires clicking Revert on a revert PR on github.com. See README.",
+      "assertions": [
+        {
+          "sha": "9ea915bc985d00b31469c5dae573b567540affe4",
+          "comment": "revert-of-revert via GH UI \u2014 never classified clean",
+          "is_compliant": false,
+          "is_clean_revert": false,
+          "revert_verification": "none"
+        }
+      ]
     },
     "4.9": {
       "title": "Revert-of-revert via local git (legacy message format)",
       "branch": "scenario/4.9-revert-of-revert",
       "intermediate_branch": "scenario/4.9-revert-of-revert-revert",
       "base_branch": "scenario/4.9-revert-of-revert-base",
-      "notes": "First revert (5bc11db) is clean — asserted compliant. Revert-of-revert (4490b9d) re-applies bytes and must be reviewed — asserted non-compliant.",
+      "notes": "First revert (5bc11db) is clean \u2014 asserted compliant. Revert-of-revert (4490b9d) re-applies bytes and must be reviewed \u2014 asserted non-compliant.",
       "assertions": [
         {
           "sha": "5bc11db876e60333dd1ed3e335823a9fcaea88b6",
-          "comment": "first revert — clean, compliant",
+          "comment": "first revert \u2014 clean, compliant",
           "is_compliant": true,
           "is_clean_revert": true,
           "revert_verification": "diff-verified"
         },
         {
           "sha": "4490b9d2617dfffee8c243c79c2ce4e3b5076aea",
-          "comment": "revert-of-revert — never classified clean",
+          "comment": "revert-of-revert \u2014 never classified clean",
           "is_compliant": false,
           "is_clean_revert": false,
           "revert_verification": "none"
@@ -139,7 +147,7 @@
       "branch_a": "scenario/4.11-octopus-a",
       "branch_b": "scenario/4.11-octopus-b",
       "branch_c": "scenario/4.11-octopus-c",
-      "notes": "Not a revert scenario per se — exercises the octopus path. The octopus commit has no PR and has OctopusMerge kind, which is not auto-classified as clean.",
+      "notes": "Not a revert scenario per se \u2014 exercises the octopus path. The octopus commit has no PR and has OctopusMerge kind, which is not auto-classified as clean.",
       "assertions": [
         {
           "sha": "32981a62e911a3f4e8c1b7d6791b20efb1b9c4c9",
