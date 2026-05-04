@@ -1,0 +1,1 @@
+Scenario 2.1: PR merged without any reviews
