@@ -255,6 +255,114 @@
           "pr_count": 1
         }
       ]
+    },
+    "2.2": {
+      "title": "Self-approval (reviewer is code contributor)",
+      "branch": "scenario/2.2-self-approval",
+      "pr": 42,
+      "notes": "sjainepenner pushes code to the PR branch then approves. Since they are both a reviewer and a PR-branch commit author, it's self-approval. Non-compliant.",
+      "assertions": [
+        {
+          "sha": "4ca91d9d0228b0b29dc427f884fec81dc8201695",
+          "is_compliant": false,
+          "has_final_approval": false,
+          "is_self_approved": true,
+          "has_stale_approval": false,
+          "has_post_merge_concern": false,
+          "pr_count": 1,
+          "merge_strategy": "squash"
+        }
+      ]
+    },
+    "2.3": {
+      "title": "Stale approval (approved on old SHA)",
+      "branch": "scenario/2.3-stale-approval",
+      "pr": 43,
+      "notes": "Reviewer approves on the first commit, then author pushes more code. Approval is on an older SHA, not the final commit. Non-compliant with has_stale_approval=true.",
+      "assertions": [
+        {
+          "sha": "894d5504ee586cf01cb5c52dfa3836647e1982f3",
+          "is_compliant": false,
+          "has_final_approval": false,
+          "is_self_approved": false,
+          "has_stale_approval": true,
+          "has_post_merge_concern": false,
+          "pr_count": 1,
+          "merge_strategy": "squash"
+        }
+      ]
+    },
+    "2.4": {
+      "title": "Independent approval (compliant happy path)",
+      "branch": "scenario/2.4-independent-approval",
+      "pr": 41,
+      "notes": "sjainepenner approves stefanpenner's PR on the final commit. The gold-standard compliant case: independent reviewer, approval on head SHA.",
+      "assertions": [
+        {
+          "sha": "0c449d05887006b2f1e93b1791ab478aaa0e391d",
+          "is_compliant": true,
+          "has_final_approval": true,
+          "is_self_approved": false,
+          "has_stale_approval": false,
+          "has_post_merge_concern": false,
+          "pr_count": 1,
+          "merge_strategy": "squash"
+        }
+      ]
+    },
+    "2.5": {
+      "title": "Post-merge concern (CHANGES_REQUESTED after merge)",
+      "branch": "scenario/2.5-post-merge-concern",
+      "pr": 44,
+      "notes": "Reviewer approves and merge goes through. Reviewer then submits CHANGES_REQUESTED after merge. Commit is still compliant (point-in-time compliance) but has_post_merge_concern=true.",
+      "assertions": [
+        {
+          "sha": "d81afb6d76c6d9a3b656e3c4eba5d55086ec8da8",
+          "is_compliant": true,
+          "has_final_approval": true,
+          "is_self_approved": false,
+          "has_stale_approval": false,
+          "has_post_merge_concern": true,
+          "pr_count": 1,
+          "merge_strategy": "squash"
+        }
+      ]
+    },
+    "3.2": {
+      "title": "APPROVE then DISMISS",
+      "branch": "scenario/3.2-approve-then-dismiss",
+      "pr": 45,
+      "notes": "Reviewer approves, then the approval is dismissed by the repo owner. The latest state is DISMISSED, so no valid approval exists. Non-compliant.",
+      "assertions": [
+        {
+          "sha": "6a2810a49f47a69842c783a334f399d358df4992",
+          "is_compliant": false,
+          "has_final_approval": false,
+          "is_self_approved": false,
+          "has_stale_approval": false,
+          "has_post_merge_concern": false,
+          "pr_count": 1,
+          "merge_strategy": "squash"
+        }
+      ]
+    },
+    "3.3": {
+      "title": "APPROVED then COMMENTED (approval survives)",
+      "branch": "scenario/3.3-approve-then-comment",
+      "pr": 46,
+      "notes": "Reviewer approves, then posts a COMMENT review. Per GitHub's model (and gh-audit's latestReviewStatesOnFinal), COMMENTED does not clobber APPROVED. Compliant.",
+      "assertions": [
+        {
+          "sha": "13210d8a76d241b697e5d688912b7d7952de960c",
+          "is_compliant": true,
+          "has_final_approval": true,
+          "is_self_approved": false,
+          "has_stale_approval": false,
+          "has_post_merge_concern": false,
+          "pr_count": 1,
+          "merge_strategy": "squash"
+        }
+      ]
     }
   },
   "series": {
