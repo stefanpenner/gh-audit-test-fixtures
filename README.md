@@ -83,7 +83,7 @@ Inputs that historically broke ingestion or reporting rather than the rules them
 | 5.1 | Empty commit, direct push | — | yes | rule 2 waives before rule 3; `is_empty_commit=true` |
 | 5.2 | Hostile commit message (`=HYPERLINK(…)`, `+cmd`, tabs) | — | no | verdict is ordinary; tests CSV escaping / xlsx string cells end-to-end |
 | 5.3 | PENDING draft review on merged PR | [#47](https://github.com/stefanpenner/gh-audit-test-fixtures/pull/47) | no | drafts are not audit events; must be filtered, must not fail the batch |
-| 5.4 | One commit in two merged PRs | [#48](https://github.com/stefanpenner/gh-audit-test-fixtures/pull/48), [#49](https://github.com/stefanpenner/gh-audit-test-fixtures/pull/49) | no | `pr_count=2`; surfaces on the Multiple PRs sheet |
+| 5.4 | One commit in two merged PRs (stacked PRs) | [#50](https://github.com/stefanpenner/gh-audit-test-fixtures/pull/50), [#51](https://github.com/stefanpenner/gh-audit-test-fixtures/pull/51) | no | `pr_count=2` once PR-branch links land (validated post-re-evaluate); Multiple PRs sheet |
 
 ---
 

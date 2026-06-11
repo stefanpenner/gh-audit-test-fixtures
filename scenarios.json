@@ -437,15 +437,15 @@
       ]
     },
     "5.4": {
-      "title": "One commit associated with two merged PRs",
-      "branch": "scenario/5.4-multi-pr-a",
-      "branch_b": "scenario/5.4-multi-pr-b",
-      "pr": 48,
-      "pr_b": 49,
-      "notes": "Commit C is on both PR branches; both PRs merged (merge-commit strategy preserves C's SHA on main). /commits/{sha}/pulls returns both, so pr_count=2 and the commit appears on the Multiple PRs sheet. Neither PR has approvals.",
+      "title": "One commit associated with two merged PRs (stacked PRs)",
+      "branch": "scenario/5.4-feature",
+      "branch_b": "scenario/5.4-stage",
+      "pr": 50,
+      "pr_b": 51,
+      "notes": "Stacked flow: feature->stage (PR #50, merge commit) then stage->main (PR #51, merge commit). GitHub's /commits/{sha}/pulls only credits the INTRODUCING PR (#50); the second association (#51) comes from gh-audit's PR-branch commit links written during #51's enrichment. pr_count=2 is therefore only visible after a re-evaluate pass over the fully-synced DB — which is exactly what the validation script runs. Neither PR has approvals.",
       "assertions": [
         {
-          "sha": "5737996de98af4c5d40f5ba334d32dc362b4f461",
+          "sha": "24c04207c1f16e61ad0a2f029f16a530da4d2fff",
           "is_compliant": false,
           "pr_count": 2
         }
