@@ -56,10 +56,10 @@
       ]
     },
     "4.5": {
-      "title": "GH 'Revert' button \u2014 clean, squash-merged",
+      "title": "GH 'Revert' button — clean, squash-merged",
       "branch": "revert-29-scenario/4.5-gh-revert-clean-base",
       "base_branch": "scenario/4.5-gh-revert-clean-base",
-      "notes": "GH squash commit has no `This reverts commit <sha>` trailer; reverted SHA is recovered from the revert PR's head branch `revert-29-\u2026` \u2192 PR #29's merge_commit_sha \u2192 diff-verify.",
+      "notes": "GH squash commit has no `This reverts commit <sha>` trailer; reverted SHA is recovered from the revert PR's head branch `revert-29-…` → PR #29's merge_commit_sha → diff-verify.",
       "assertions": [
         {
           "sha": "0063656668b0ebc763c21b0aae36cd7f2eeccb02",
@@ -74,14 +74,14 @@
       "branch": null,
       "base_branch": "scenario/4.6-gh-revert-conflict-base",
       "modify_branch": "scenario/4.6-gh-revert-conflict-modify",
-      "notes": "Not reproducible \u2014 GitHub refuses the Revert button when the base can't be auto-reverted. Users in this situation fall back to local `git revert`, covered by 4.3.",
+      "notes": "Not reproducible — GitHub refuses the Revert button when the base can't be auto-reverted. Users in this situation fall back to local `git revert`, covered by 4.3.",
       "assertions": []
     },
     "4.7": {
       "title": "GH 'Revert' button, merge-commit strategy",
       "branch": "revert-32-scenario/4.7-gh-revert-mergecommit-base",
       "base_branch": "scenario/4.7-gh-revert-mergecommit-base",
-      "notes": "The revert commit lives on the second-parent chain of the 2-parent `Merge pull request #\u2026` commit. gh-audit audits both. The merge commit is NotRevert (CleanMerge-shaped). The revert commit itself gets the branch-name fallback treatment and diff-verifies.",
+      "notes": "The revert commit lives on the second-parent chain of the 2-parent `Merge pull request #…` commit. gh-audit audits both. The merge commit is NotRevert (CleanMerge-shaped). The revert commit itself gets the branch-name fallback treatment and diff-verifies.",
       "assertions": [
         {
           "sha": "6e218c52b35629884f08dec74f245c218cb53666",
@@ -99,7 +99,7 @@
       "assertions": [
         {
           "sha": "c6fe39ad83983177b4ba56bdbec5c8f5a705183d",
-          "comment": "revert-of-revert via GH UI \u2014 never classified clean",
+          "comment": "revert-of-revert via GH UI — never classified clean",
           "is_compliant": false,
           "is_clean_revert": false,
           "revert_verification": "none"
@@ -111,18 +111,18 @@
       "branch": "scenario/4.9-revert-of-revert",
       "intermediate_branch": "scenario/4.9-revert-of-revert-revert",
       "base_branch": "scenario/4.9-revert-of-revert-base",
-      "notes": "First revert (5bc11db) is clean \u2014 asserted compliant. Revert-of-revert (4490b9d) re-applies bytes and must be reviewed \u2014 asserted non-compliant.",
+      "notes": "First revert (5bc11db) is clean — asserted compliant. Revert-of-revert (4490b9d) re-applies bytes and must be reviewed — asserted non-compliant.",
       "assertions": [
         {
           "sha": "5bc11db876e60333dd1ed3e335823a9fcaea88b6",
-          "comment": "first revert \u2014 clean, compliant",
+          "comment": "first revert — clean, compliant",
           "is_compliant": true,
           "is_clean_revert": true,
           "revert_verification": "diff-verified"
         },
         {
           "sha": "4490b9d2617dfffee8c243c79c2ce4e3b5076aea",
-          "comment": "revert-of-revert \u2014 never classified clean",
+          "comment": "revert-of-revert — never classified clean",
           "is_compliant": false,
           "is_clean_revert": false,
           "revert_verification": "none"
@@ -132,11 +132,11 @@
     "4.10": {
       "title": "Direct-push clean revert (no PR)",
       "base_branch": "scenario/4.10-direct-push-base",
-      "notes": "Rule 3 (no associated PR) wins over rule 8 (clean-revert waiver). The revert's diff verifies cleanly and the flag persists on the audit row, but the verdict is non-compliant because direct-push-by-human bypasses review entirely.",
+      "notes": "Rule 8 (clean-revert waiver) applies even without a PR: the revert's diff verifies as the exact inverse of the reverted commit, so no unreviewed bytes land on the branch. Earlier gh-audit versions let rule 3 (no PR) win; the verdict flipped when rule 8 was aligned with Architecture.md (runs against ANY non-compliant primary verdict).",
       "assertions": [
         {
           "sha": "c7d8bfcb5f2c458672fe0bbb5fb711adaf9bcce5",
-          "is_compliant": false,
+          "is_compliant": true,
           "is_clean_revert": true,
           "revert_verification": "diff-verified"
         }
@@ -147,7 +147,7 @@
       "branch_a": "scenario/4.11-octopus-a",
       "branch_b": "scenario/4.11-octopus-b",
       "branch_c": "scenario/4.11-octopus-c",
-      "notes": "Not a revert scenario per se \u2014 exercises the octopus path. The octopus commit has no PR and has OctopusMerge kind, which is not auto-classified as clean.",
+      "notes": "Not a revert scenario per se — exercises the octopus path. The octopus commit has no PR and has OctopusMerge kind, which is not auto-classified as clean.",
       "assertions": [
         {
           "sha": "32981a62e911a3f4e8c1b7d6791b20efb1b9c4c9",
@@ -172,10 +172,10 @@
       ]
     },
     "1.1": {
-      "title": "Squash merge \u2014 no review",
+      "title": "Squash merge — no review",
       "branch": "scenario/1.1-squash-no-review",
       "pr": 36,
-      "notes": "Squash-merged PR with no reviews. Tests commit\u2192PR linking for squash strategy and confirms non-compliance when no approval exists.",
+      "notes": "Squash-merged PR with no reviews. Tests commit→PR linking for squash strategy and confirms non-compliance when no approval exists.",
       "assertions": [
         {
           "sha": "96c61c67337f92279569d0c8bd65a0ec705d0e7a",
@@ -189,7 +189,7 @@
       ]
     },
     "1.2": {
-      "title": "Merge commit (create merge commit) \u2014 no review",
+      "title": "Merge commit (create merge commit) — no review",
       "branch": "scenario/1.2-merge-commit-no-review",
       "pr": 37,
       "notes": "Standard 2-parent merge commit via the GitHub merge button. Verified signature from web-flow means CleanMerge classification. Non-compliant due to no approval.",
@@ -206,10 +206,10 @@
       ]
     },
     "1.3": {
-      "title": "Rebase merge \u2014 no review",
+      "title": "Rebase merge — no review",
       "branch": "scenario/1.3-rebase-no-review",
       "pr": 38,
-      "notes": "Rebase-merged PR. GitHub rewrites the commit SHA on rebase, so the audited commit is the rebased SHA (not the original branch commit). Tests commit\u2192PR linking for rebase strategy.",
+      "notes": "Rebase-merged PR. GitHub rewrites the commit SHA on rebase, so the audited commit is the rebased SHA (not the original branch commit). Tests commit→PR linking for rebase strategy.",
       "assertions": [
         {
           "sha": "40f9b542cb3085dbc16dddccca31f60ed68a55f1",
@@ -223,7 +223,7 @@
       ]
     },
     "2.1": {
-      "title": "No approval \u2014 PR merged without reviews",
+      "title": "No approval — PR merged without reviews",
       "branch": "scenario/2.1-no-approval",
       "pr": 39,
       "notes": "PR merged with zero reviews of any kind. Simplest non-compliant case: rule 4 fires because no approval exists on the final commit.",
@@ -363,6 +363,93 @@
           "merge_strategy": "squash"
         }
       ]
+    },
+    "1.4": {
+      "title": "Dirty merge — local --no-ff merge pushed directly",
+      "branch": "scenario/1.4-dirty-merge",
+      "notes": "Two-parent merge with non-web-flow committer and a non-'Merge pull request' message: DirtyMerge kind (could hide committer-authored conflict resolution), never auto-trusted. No PR, so non-compliant.",
+      "assertions": [
+        {
+          "sha": "910b01f766b36f0ffd7f033f10ca5be17b600070",
+          "is_compliant": false,
+          "is_clean_merge": false,
+          "merge_strategy": "merge"
+        }
+      ]
+    },
+    "4.13": {
+      "title": "Clean revert of ++/-- content lines",
+      "notes": "Reverted file's lines start with ++/--, which serialize as '+++...'/'---...' in patches. A parser that strips those as file headers either false-mismatches this clean revert or (symmetric case) false-verifies a smuggle. gh-audit's hunk-aware parser must diff-verify this one.",
+      "assertions": [
+        {
+          "sha": "1be914ed6b2d963ba51fe0b8005a8a2e3e8377dc",
+          "is_compliant": true,
+          "is_clean_revert": true,
+          "revert_verification": "diff-verified"
+        }
+      ]
+    },
+    "4.14": {
+      "title": "Large revert (>300 files) — files list must paginate",
+      "notes": "Base commit touches 305 files; GET /commits/{sha} returns at most 300 files per page. Without pagination both sides truncate to the alphabetically-first 300 and the comparison can falsely verify. With pagination this is a clean diff-verified revert.",
+      "assertions": [
+        {
+          "sha": "cfed96df99bbcfd2841d7fa90ea9177742a9b3eb",
+          "is_compliant": true,
+          "is_clean_revert": true,
+          "revert_verification": "diff-verified"
+        }
+      ]
+    },
+    "5.1": {
+      "title": "Empty commit, direct push (no PR)",
+      "notes": "additions==0 && deletions==0: rule 2 waives before rule 3 can fire. Flagged is_empty_commit for visibility.",
+      "assertions": [
+        {
+          "sha": "cc55f2fe71ebb045795ea41c2206f26036756dae",
+          "is_compliant": true,
+          "is_clean_revert": false,
+          "revert_verification": "none"
+        }
+      ]
+    },
+    "5.2": {
+      "title": "Hostile commit message (formula injection + control chars)",
+      "notes": "Message starts with '=HYPERLINK(...' and contains '+cmd', '@SUM', tabs. Verdict is ordinary (no PR -> non-compliant); the value is end-to-end report robustness: CSV must escape it, xlsx must store it as a string cell, nothing crashes.",
+      "assertions": [
+        {
+          "sha": "529636f3305a2252ead7539b532ab032fdc6ca73",
+          "is_compliant": false
+        }
+      ]
+    },
+    "5.3": {
+      "title": "PENDING draft review on merged PR",
+      "branch": "scenario/5.3-pending-draft",
+      "pr": 47,
+      "notes": "An unsubmitted draft review stays PENDING forever. GitHub only returns it to the draft author's own token, so synced state differs by token — either way it must be filtered (a draft is not an audit event) and must never fail the reviews batch.",
+      "assertions": [
+        {
+          "sha": "e449f792a4811dfeba4500d0c5776f8518addf64",
+          "is_compliant": false,
+          "has_final_approval": false
+        }
+      ]
+    },
+    "5.4": {
+      "title": "One commit associated with two merged PRs",
+      "branch": "scenario/5.4-multi-pr-a",
+      "branch_b": "scenario/5.4-multi-pr-b",
+      "pr": 48,
+      "pr_b": 49,
+      "notes": "Commit C is on both PR branches; both PRs merged (merge-commit strategy preserves C's SHA on main). /commits/{sha}/pulls returns both, so pr_count=2 and the commit appears on the Multiple PRs sheet. Neither PR has approvals.",
+      "assertions": [
+        {
+          "sha": "5737996de98af4c5d40f5ba334d32dc362b4f461",
+          "is_compliant": false,
+          "pr_count": 2
+        }
+      ]
     }
   },
   "series": {
@@ -377,6 +464,9 @@
     },
     "4": {
       "title": "Revert scenarios"
+    },
+    "5": {
+      "title": "Data-shape edge cases (empty, hostile metadata, drafts, multi-PR)"
     }
   }
 }
