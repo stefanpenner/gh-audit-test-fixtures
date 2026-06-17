@@ -59,7 +59,7 @@ Map 1:1 to the revert-classification table in gh-audit's `Architecture.md` rule 
 
 | # | Title | PR | Compliant? | Why |
 |---|---|---|---|---|
-| 4.1 | AutoRevert (bot-style message) | — | yes | R1 (trusted by construction) |
+| 4.1 | AutoRevert (message-only) — NOT waived | — | no | message references an unfetchable SHA → `message-only`; a forgeable bot-style message alone must not waive (hardened 2026-06) |
 | 4.2 | Clean `git revert` | — | yes | R1 (diff-verified via `This reverts commit` trailer) |
 | 4.3 | `git revert` with conflict resolution | — | no | `diff-mismatch` |
 | 4.4 | Manual revert with stripped trailer | — | no | `message-only` — no reverted SHA recoverable |
@@ -73,6 +73,7 @@ Map 1:1 to the revert-classification table in gh-audit's `Architecture.md` rule 
 | 4.12 | Empty revert of empty base | — | yes | empty-commit fallback fires first |
 | 4.13 | Clean revert of `++`/`--` content lines | — | yes | hunk-aware patch parsing must not drop `+++…`/`---…`-serialized content as headers |
 | 4.14 | Large revert (>300 files) | — | yes | `files[]` pagination; truncated comparisons must never produce `diff-verified` |
+| 4.15 | AutoRevert with real inverse diff | — | yes | bot-style message naming a real SHA whose diff IS the exact inverse → `diff-verified` (rule 8). Contrast 4.1: the message format doesn't grant the waiver, the inverse diff does |
 
 ## 5.x — Data-shape edge cases
 

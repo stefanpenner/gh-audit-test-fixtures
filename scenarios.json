@@ -2,15 +2,15 @@
   "description": "Maps scenario IDs to branch names and machine-readable expected outcomes. Revert scenarios (4.x) map to gh-audit's Architecture.md rule 8. Each scenario's `assertions` array is the source of truth for automated validation (see scripts/test-fixtures.sh in gh-audit). Other fields are descriptive.",
   "scenarios": {
     "4.1": {
-      "title": "AutoRevert (bot-style message)",
+      "title": "AutoRevert (message-only) — NOT waived",
       "branch": "scenario/4.1-auto-revert",
       "base_branch": "scenario/4.1-auto-revert-base",
-      "notes": "Message matches `Automatic revert of <sha>..<sha>` regex; trusted by construction without diff verification.",
+      "notes": "Message matches `Automatic revert of <sha>..<sha>`, but the referenced SHA is unfetchable so the diff cannot be verified. Hardened 2026-06: a forgeable bot-style message alone must NOT waive (was trusted-by-construction). Contrast 4.15.",
       "assertions": [
         {
           "sha": "7226e31fdf0637df81e0fe1cbdf802cb1549a4e0",
-          "is_compliant": true,
-          "is_clean_revert": true,
+          "is_compliant": false,
+          "is_clean_revert": false,
           "revert_verification": "message-only"
         }
       ]
@@ -448,6 +448,19 @@
           "sha": "24c04207c1f16e61ad0a2f029f16a530da4d2fff",
           "is_compliant": false,
           "pr_count": 2
+        }
+      ]
+    },
+    "4.15": {
+      "title": "AutoRevert with real inverse diff — diff-verified",
+      "branch": "main",
+      "notes": "Bot-style `Automatic revert of <real-sha>..<sha>` whose diff IS the exact inverse of the referenced commit. Hardened 2026-06: auto-reverts are diff-verified like manual reverts — the message only names which SHA to diff, the inverse-diff check grants the waiver (rule 8, applies even without a PR). Contrast 4.1 (message-only, not waived).",
+      "assertions": [
+        {
+          "sha": "ad0e0ce4a9a6249e3ba952bf72c097289ed22c6f",
+          "is_compliant": true,
+          "is_clean_revert": true,
+          "revert_verification": "diff-verified"
         }
       ]
     }
