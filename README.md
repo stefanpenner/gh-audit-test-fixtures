@@ -86,6 +86,19 @@ Inputs that historically broke ingestion or reporting rather than the rules them
 | 5.3 | PENDING draft review on merged PR | [#47](https://github.com/stefanpenner/gh-audit-test-fixtures/pull/47) | no | drafts are not audit events; must be filtered, must not fail the batch |
 | 5.4 | One commit in two merged PRs (stacked PRs) | [#50](https://github.com/stefanpenner/gh-audit-test-fixtures/pull/50), [#51](https://github.com/stefanpenner/gh-audit-test-fixtures/pull/51) | no | `pr_count=2` once PR-branch links land (validated post-re-evaluate); Multiple PRs sheet |
 
+## Forgery-rejection coverage (unit tests, not fixtures)
+
+The "a forgeable signal must never flip a verdict to compliant" invariant has
+three vectors. Only the revert one is expressible here; the others need harness
+features this fixture run doesn't have, so they live as unit tests in gh-audit
+(see `Architecture.md` → Trust model → chain-of-custody checklist):
+
+| Vector | Where | Why not a fixture |
+|---|---|---|
+| §8 auto-revert message-only vs diff-verified | **4.1 / 4.15 here** | git-expressible |
+| §1 forged git-author email exemption | `TestEvaluateCommit_Rule1_IDOnlyExemption` | the validation config has no `exemptions:` list, so an exempt path can't be exercised |
+| §4 backdated post-approval commit (carve-out) | `TestApprovalRefreshable_PositionalNotTemporal` | needs an exempt bot, an independent review, and a backdated `GIT_COMMITTER_DATE` — none reproducible in a single-account, API-built fixture |
+
 ---
 
 ## Running validation locally
